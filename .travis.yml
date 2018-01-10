@@ -1,0 +1,28 @@
+language: android
+
+android:
+  components:
+    - build-tools-26.0.2
+    - android-27
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+notifications:
+  email: false
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+before_script:
+  - ./gradlew addSources -Dorg.gradle.project.PACKAGE_NAME="com.skywindgroup.oldmasterq" -Dorg.gradle.project.APP_NAME="Old Master Q"
+
+script: ./gradlew assembleRelease
