@@ -1,0 +1,67 @@
+buildscript {
+    ext.kotlin_version = '1.2.10'
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+    }
+}
+
+apply plugin: 'com.github.ben-manes.versions'
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+task addSources {
+    doLast {
+        subprojects.each {
+            if (it.plugins.hasPlugin('com.android.application')) {
+                def sourcePackage = 'com.skywindgroup.lobby'
+                ['api16', 'api21', 'main'].each { archive ->
+                    def srcDir = new File(it.projectDir, "src/${archive}")
+
+                    def targetDir = new File(srcDir, "java/${PACKAGE_NAME.replace('.', '/')}")
+                    targetDir.mkdirs()
+
+                    def manifest = new File(srcDir, "AndroidManifest.xml")
+                    if (manifest.exists()) {
+                        manifest.text = manifest.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
+                    }
+
+                    ['Platform.kt', 'WebViewEngine.kt', 'GameActivity.kt', 'MainActivity.kt'].each { fileName ->
+                        adjustPackage(srcDir, sourcePackage, PACKAGE_NAME, fileName)
+                    }
+                    new File(srcDir, "java/${sourcePackage.replace('.', '/')}").delete()
+
+                    def strings = new File(srcDir, "res/values/strings.xml")
+                    if (strings.exists()) {
+                        strings.text = strings.text.replaceAll(">Lobby<", ">${APP_NAME}<")
+                    }
+                }
+            }
+        }
+    }
+}
+
+static
+def adjustPackage(File srcDir, String sourcePackage, String targetPackage, String fileName) {
+    def sourceFile = new File(srcDir, "java/${sourcePackage.replace('.', '/')}/${fileName}")
+    if (sourceFile.exists()) {
+        sourceFile.text = sourceFile.text.replaceAll("package ${sourcePackage}", "package ${targetPackage}")
+        sourceFile.renameTo(new File(srcDir, "java/${targetPackage.replace('.', '/')}/${fileName}"))
+    }
+}
