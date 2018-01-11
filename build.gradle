@@ -31,6 +31,12 @@ task addSources {
         subprojects.each {
             if (it.plugins.hasPlugin('com.android.application')) {
                 def sourcePackage = 'com.skywindgroup.lobby'
+
+                def gradle = new File(it.projectDir, "src/build.gradle")
+                if (gradle.exists()) {
+                    gradle.text = gradle.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
+                }
+
                 ['api16', 'api21', 'main'].each { archive ->
                     def srcDir = new File(it.projectDir, "src/${archive}")
 

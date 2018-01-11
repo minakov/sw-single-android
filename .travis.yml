@@ -1,28 +1,55 @@
 language: android
 
+jdk:
+  - oraclejdk8
+
 android:
   components:
-    - build-tools-26.0.2
-    - android-27
+  - build-tools-26.0.2
+  - android-27
   licenses:
-    - 'android-sdk-preview-license-52d11cd2'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+  - android-sdk-preview-license-52d11cd2
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+
+before_script:
+- ./gradlew addSources
+
+script: "./gradlew assembleRelease"
+
+before_deploy:
+- mkdir -p upload/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-armeabi-v7a-release-unsigned.apk upload/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-x86-release-unsigned.apk upload/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-armeabi-v7a-release-unsigned.apk upload/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-x86-release-unsigned.apk upload/$APP_ID
+
+deploy:
+  skip_cleanup: true
+  local-dir: upload
+  provider: gcs
+  access_key_id: GOOG7E757OFLPHA2NDFS
+  secret_access_key:
+    secure: GtRPZFtT0HqyENeg4zsiuE0bCRrYFJ5Og3BdqdTw3J7PKGN3NuCJdjBiBrYk3BniYNwN6GAiciGf3TU9J7uk1DirsfjoRsSr3uSdHcd0CUE8y5ttN3aAKIhPC6unNJBIqC6C7LOuSrdyoRA9m0DYsFT2HxSOAZ7sTyHit/DhUzU8BUKQPbT3gP2i8F7uSXCS16YvsH4+kAMpA1nbCzJ3ADvqit0OCsuJpXBPUbpG3GcvojI3QEPAPZwsaUDBTHO5kbnFUcFNtS0qXqvPJEA5A7eQNlauMvd0Xbnnrecqdg9mxiBA/bQpjPYarc43bVP3+rRaxmdPxaX1PwgiLqnMTLmeM3yoK+Ry03jj+KRG9WMqpP4GN/XVpsCn7xfcmG9QUkJis+6QwxqXnOr2PViWbo+NPUri9eslYpfVg2Lta282/VrNIrPq/rLuu4DJhWYrj71Ufu06LkIJ/ljb8MdbyIU50p2u1+2GIBenSTdSCTvs7P791bna5Sno5AmLFk3UURO9uStQGuuyZ/J0niosXple9CZ+MTS69KYXv4JGB4wuOR2JxuvlcNoMDWh+DJoYZrK+ZDmEM/BW+ejlTza4aMoAwYuyfXnz5XruQXMLmraJiaMGjz0YcBARsBZJn+ZiUgyEoWh6/myZELQogO+0bk6RVYRXLNjTyNmC8kzLYcM=
+  bucket: sw-lobby.appspot.com
+
+env:
+  global:
+    - APP_ID: "-L2QfM-KdvZ74J9Ab99c"
+    - ORG_GRADLE_PROJECT_PACKAGE_NAME: "com.skywindgroup.oldmasterq"
+    - ORG_GRADLE_PROJECT_APP_NAME: "Old Master Q"
+
+sudo: false
 
 notifications:
   email: false
 
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
-
-before_script:
-  - ./gradlew addSources -Dorg.gradle.project.PACKAGE_NAME="com.skywindgroup.oldmasterq" -Dorg.gradle.project.APP_NAME="Old Master Q"
-
-script: ./gradlew assembleRelease
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
