@@ -32,7 +32,7 @@ task addSources {
             if (it.plugins.hasPlugin('com.android.application')) {
                 def sourcePackage = 'com.skywindgroup.lobby'
 
-                def gradle = new File(it.projectDir, "src/build.gradle")
+                def gradle = new File(it.projectDir, "build.gradle")
                 if (gradle.exists()) {
                     gradle.text = gradle.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
                 }

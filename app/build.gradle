@@ -19,6 +19,7 @@ android {
 
         resConfigs "en"
         buildConfigField "String", "LOG_TAG", "\"Lobby\""
+        buildConfigField "String", "GAME_URL", "\"${GAME_URL}\""
 
         vectorDrawables {
             useSupportLibrary = true
@@ -37,10 +38,19 @@ android {
             versionCode 10000 + android.defaultConfig.versionCode
         }
     }
+    signingConfigs {
+        releaseConfig {
+            storeFile file('../release.jks')
+            storePassword KEYSTORE_PASSWORD
+            keyAlias KEYSTORE_ALIAS
+            keyPassword KEYSTORE_ALIAS_PASSWORD
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
         }
     }
     splits {

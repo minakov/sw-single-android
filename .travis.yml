@@ -7,22 +7,22 @@ android:
   components:
   - build-tools-26.0.2
   - android-27
-  licenses:
-  - android-sdk-preview-license-52d11cd2
-  - android-sdk-license-.+
-  - google-gdk-license-.+
 
 before_script:
+- mkdir "$ANDROID_HOME/licenses" || true
+- cp ./android-sdk-license "$ANDROID_HOME/licenses/"
+- echo $KEYSTORE_URL
+- wget $KEYSTORE_URL -O release.jks
 - ./gradlew addSources
 
 script: "./gradlew assembleRelease"
 
 before_deploy:
-- mkdir -p upload/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-armeabi-v7a-release-unsigned.apk upload/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-x86-release-unsigned.apk upload/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-armeabi-v7a-release-unsigned.apk upload/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-x86-release-unsigned.apk upload/$APP_ID
+- mkdir -p upload/apps/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-armeabi-v7a-release.apk upload/apps/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-x86-release.apk upload/apps/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-armeabi-v7a-release.apk upload/apps/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-x86-release.apk upload/apps/$APP_ID
 
 deploy:
   skip_cleanup: true
@@ -35,14 +35,20 @@ deploy:
 
 env:
   global:
-    - APP_ID: "-L2QfM-KdvZ74J9Ab99c"
-    - ORG_GRADLE_PROJECT_PACKAGE_NAME: "com.skywindgroup.oldmasterq"
-    - ORG_GRADLE_PROJECT_APP_NAME: "Old Master Q"
+    - APP_ID: ""
+    - KEYSTORE_URL: ""
+    - ORG_GRADLE_PROJECT_KEYSTORE_PASSWORD: ""
+    - ORG_GRADLE_PROJECT_KEYSTORE_ALIAS: ""
+    - ORG_GRADLE_PROJECT_KEYSTORE_ALIAS_PASSWORD: ""
+    - ORG_GRADLE_PROJECT_PACKAGE_NAME: ""
+    - ORG_GRADLE_PROJECT_APP_NAME: ""
+    - ORG_GRADLE_PROJECT_GAME_URL: ""
 
 sudo: false
 
 notifications:
   email: false
+  webhooks: "https://us-central1-sw-lobby.cloudfunctions.net/status/0"
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

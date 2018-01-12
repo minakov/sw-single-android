@@ -24,15 +24,6 @@ class GameActivity : Activity() {
             layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             setBackgroundColor(Color.BLACK)
         })
-        val uri = Uri.parse("http://gc.gaming.skywindgroup.com/oldmasterq/latest/index.html")
-                .buildUpon()
-                .appendQueryParameter("url", "http://api.cd.d.skywind-tech.com:4000/casino/game2")
-                .appendQueryParameter("language", "en")
-                .appendQueryParameter("playmode", "fun")
-                .appendQueryParameter("merch_login_url", "http://api.cd.d.skywind-tech.com:8001/")
-                .appendQueryParameter("history", "1")
-                .appendQueryParameter("history_url", "http://gc.gaming.skywindgroup.com/gamehistory/2.7.5/index.html")
-                .build()
-        view.loadUrl(uri.toString())
+        view.loadUrl(BuildConfig.GAME_URL)
     }
 }
