@@ -1,13 +1,11 @@
 package com.skywindgroup.lobby
 
 import android.app.Activity
-import android.os.Build
-import android.view.WindowManager
 
-class Platform(val activity: Activity) {
+class PlatformCompatKitKat(val activity: Activity) : PlatformCompat {
     private var immersiveMode: Boolean = false
 
-    fun fullscreen() {
+    override fun fullscreen() {
         immersiveMode = true
     }
 }

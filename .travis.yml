@@ -19,10 +19,7 @@ script: "./gradlew assembleRelease"
 
 before_deploy:
 - mkdir -p upload/apps/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-armeabi-v7a-release.apk upload/apps/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api16/release/app-api16-x86-release.apk upload/apps/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-armeabi-v7a-release.apk upload/apps/$APP_ID
-- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/api21/release/app-api21-x86-release.apk upload/apps/$APP_ID
+- mv $TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk upload/apps/$APP_ID
 
 deploy:
   skip_cleanup: true

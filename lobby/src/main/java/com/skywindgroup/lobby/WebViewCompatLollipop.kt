@@ -2,13 +2,20 @@ package com.skywindgroup.lobby
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Environment
+import android.support.annotation.RequiresApi
+import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 
 @SuppressLint("SetJavaScriptEnabled")
-class WebViewEngine(private val context: Context) {
-    val view: WebView by lazy {
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+class WebViewCompatLollipop(context: Context) : WebViewCompat {
+    override val view: View by lazy {
+        webView
+    }
+    private val webView: WebView by lazy {
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
@@ -34,5 +41,9 @@ class WebViewEngine(private val context: Context) {
                 setAppCachePath(Environment.getDownloadCacheDirectory().path)
             }
         }
+    }
+
+    override fun loadUrl(url: String) {
+        webView.loadUrl(url)
     }
 }

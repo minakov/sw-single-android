@@ -6,4 +6,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/defaultBackground</item>
     </style>
+
+    <style name="AppTheme.SplashTheme">
+        <item name="android:windowBackground">@color/defaultBackground</item>
+    </style>
 </resources>

@@ -30,33 +30,31 @@ task addSources {
     doLast {
         subprojects.each {
             if (it.plugins.hasPlugin('com.android.application')) {
-                def sourcePackage = 'com.skywindgroup.lobby'
+                def sourcePackage = 'com.skywindgroup.app.single'
 
                 def gradle = new File(it.projectDir, "build.gradle")
                 if (gradle.exists()) {
                     gradle.text = gradle.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
                 }
 
-                ['api16', 'api21', 'main'].each { archive ->
-                    def srcDir = new File(it.projectDir, "src/${archive}")
+                def srcDir = new File(it.projectDir, "src/main")
 
-                    def targetDir = new File(srcDir, "java/${PACKAGE_NAME.replace('.', '/')}")
-                    targetDir.mkdirs()
+                def targetDir = new File(srcDir, "java/${PACKAGE_NAME.replace('.', '/')}")
+                targetDir.mkdirs()
 
-                    def manifest = new File(srcDir, "AndroidManifest.xml")
-                    if (manifest.exists()) {
-                        manifest.text = manifest.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
-                    }
+                def manifest = new File(srcDir, "AndroidManifest.xml")
+                if (manifest.exists()) {
+                    manifest.text = manifest.text.replaceAll("${sourcePackage}", "${PACKAGE_NAME}")
+                }
 
-                    ['Platform.kt', 'WebViewEngine.kt', 'GameActivity.kt', 'MainActivity.kt'].each { fileName ->
-                        adjustPackage(srcDir, sourcePackage, PACKAGE_NAME, fileName)
-                    }
-                    new File(srcDir, "java/${sourcePackage.replace('.', '/')}").delete()
+                ['MainActivity.kt'].each { fileName ->
+                    adjustPackage(srcDir, sourcePackage, PACKAGE_NAME, fileName)
+                }
+                new File(srcDir, "java/${sourcePackage.replace('.', '/')}").delete()
 
-                    def strings = new File(srcDir, "res/values/strings.xml")
-                    if (strings.exists()) {
-                        strings.text = strings.text.replaceAll(">Lobby<", ">${APP_NAME}<")
-                    }
+                def strings = new File(srcDir, "res/values/strings.xml")
+                if (strings.exists()) {
+                    strings.text = strings.text.replaceAll("Single App", "${APP_NAME}")
                 }
             }
         }
