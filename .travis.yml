@@ -45,7 +45,7 @@ sudo: false
 
 notifications:
   email: false
-  webhooks: "https://us-central1-sw-lobby.cloudfunctions.net/status/0"
+  webhooks: "https://us-central1-sw-lobby.cloudfunctions.net/travis"
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
